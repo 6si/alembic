@@ -95,7 +95,11 @@ def revision(config, message=None, autogenerate=False, sql=False):
             template_args=template_args,
         ):
             script.run_env()
-    return script.generate_revision(util.rev_id(), message, refresh=True,
+
+    heads = map(int, script.get_heads() + ['0'])
+    assert len(heads) <= 2, "branch detected"
+    rev_id = "%06d" % (max(heads) + 1) 
+    return script.generate_revision(rev_id, message, refresh=True,
                                     **template_args)
 
 
